@@ -1132,9 +1132,9 @@ vg_lite_error_t vg_lite_draw_pattern(vg_lite_buffer_t *target,
         return VG_LITE_NOT_SUPPORT;
     }
 #endif
-    if (source->format == VG_LITE_A4 || source->format == VG_LITE_A8) {
-        return VG_LITE_NOT_SUPPORT;
-    }
+    // if (source->format == VG_LITE_A4 || source->format == VG_LITE_A8) {
+    //     return VG_LITE_NOT_SUPPORT;
+    // }
     if (!path || !path->path) {
         return VG_LITE_INVALID_ARGUMENT;
     }
