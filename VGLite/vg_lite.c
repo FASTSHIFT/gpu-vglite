@@ -2747,7 +2747,7 @@ static vg_lite_error_t stall(vg_lite_context_t * context, uint32_t time_ms, uint
 
     /* Wait until GPU is ready. */
     wait.context = &context->context;
-    wait.timeout_ms = time_ms > 0 ? time_ms : VG_LITE_INFINITE;
+    wait.timeout_ms = time_ms > 0 ? time_ms : 1000;
     wait.event_mask = mask;
     wait.reset_type = RESTORE_ALL_COMMAND;
 #if defined(_WINDLL)
@@ -7191,6 +7191,16 @@ vg_lite_error_t vg_lite_get_parameter(vg_lite_param_type_t type,
         if (count != 1) {
             return VG_LITE_INVALID_ARGUMENT;
         }
+
+        /* Check if the command buffer will overflow.*/
+        if (CMDBUF_OFFSET(s_context) > ((CMDBUF_SIZE(s_context)) >> 1)) {
+            printf("offset: %d\r\n", CMDBUF_OFFSET(s_context));
+            error = vg_lite_flush();
+            if (error != VG_LITE_SUCCESS) {
+                return error;
+            }
+        }
+
         vg_lite_get_register(0x04, &gpu_idle);
         uiparams = (vg_lite_uint32_t*)params;
         *uiparams = ((gpu_idle & 0x0B05) == 0x0B05);
