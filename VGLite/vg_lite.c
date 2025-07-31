@@ -7193,13 +7193,13 @@ vg_lite_error_t vg_lite_get_parameter(vg_lite_param_type_t type,
         }
 
         /* Check if the command buffer will overflow.*/
-        if (CMDBUF_OFFSET(s_context) > ((CMDBUF_SIZE(s_context)) >> 1)) {
-            printf("offset: %d\r\n", CMDBUF_OFFSET(s_context));
-            error = vg_lite_flush();
-            if (error != VG_LITE_SUCCESS) {
-                return error;
-            }
-        }
+        // if (CMDBUF_OFFSET(s_context) > ((CMDBUF_SIZE(s_context)) >> 1)) {
+        //     printf("offset: %d\r\n", CMDBUF_OFFSET(s_context));
+        //     error = vg_lite_flush();
+        //     if (error != VG_LITE_SUCCESS) {
+        //         return error;
+        //     }
+        // }
 
         vg_lite_get_register(0x04, &gpu_idle);
         uiparams = (vg_lite_uint32_t*)params;
