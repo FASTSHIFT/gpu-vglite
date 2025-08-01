@@ -969,7 +969,7 @@ vg_lite_error_t vg_lite_draw(vg_lite_buffer_t *target,
         point_max.y = target->height;
     }
 
-    if (ts_is_fullscreen == 0){
+    if (1 || ts_is_fullscreen == 0){
         transform(&temp, (vg_lite_float_t)path->bounding_box[0], (vg_lite_float_t)path->bounding_box[1], matrix);
         point_min = point_max = temp;
     
@@ -1005,6 +1005,11 @@ vg_lite_error_t vg_lite_draw(vg_lite_buffer_t *target,
     }
 
     /* Convert states into hardware values. */
+    vg_lite_int32_t bound_width = point_max.x - point_min.x;
+    vg_lite_int32_t bound_height = point_max.y - point_min.y;
+    if (bound_width + point_min.x > target->width) {
+    	bound_width = target->width - point_min.x;
+    }
     blend_mode = convert_blend(blend);
     format = convert_path_format(path->format);
     quality = convert_path_quality(path->quality);
@@ -1040,6 +1045,7 @@ vg_lite_error_t vg_lite_draw(vg_lite_buffer_t *target,
                 VG_LITE_RETURN_ERROR(push_state(&s_context, 0x0A01, x | (y << 16)));
                 VG_LITE_RETURN_ERROR(push_state(&s_context, 0x0A39, x | (y << 16)));
                 VG_LITE_RETURN_ERROR(push_state(&s_context, 0x0A3D, tessellation_size / 64));
+                VG_LITE_RETURN_ERROR(push_state(&s_context, 0x0A3A, bound_width | (bound_height << 16)));
 
                 if (VLM_PATH_GET_UPLOAD_BIT(*path) == 1) {
                     VG_LITE_RETURN_ERROR(push_call(&s_context, path->uploaded.address, path->uploaded.bytes));
@@ -1362,7 +1368,7 @@ vg_lite_error_t vg_lite_draw_pattern(vg_lite_buffer_t *target,
     /* Work on path states. */
     matrix = *path_matrix;
 
-    if (ts_is_fullscreen == 0){
+    if (1 || ts_is_fullscreen == 0){
         transform(&temp, (vg_lite_float_t)path->bounding_box[0], (vg_lite_float_t)path->bounding_box[1], &matrix);
         point_min = point_max = temp;
     
@@ -1398,6 +1404,11 @@ vg_lite_error_t vg_lite_draw_pattern(vg_lite_buffer_t *target,
     }
 
     /* Convert states into hardware values. */
+    vg_lite_int32_t bound_width = point_max.x - point_min.x;
+    vg_lite_int32_t bound_height = point_max.y - point_min.y;
+    if (bound_width + point_min.x > target->width) {
+    	bound_width = target->width - point_min.x;
+    }
     blend_mode = convert_blend(blend);
     format = convert_path_format(path->format);
     quality = convert_path_quality(path->quality);
@@ -1435,6 +1446,7 @@ vg_lite_error_t vg_lite_draw_pattern(vg_lite_buffer_t *target,
                 VG_LITE_RETURN_ERROR(push_state(&s_context, 0x0A01, x | (y << 16)));
                 VG_LITE_RETURN_ERROR(push_state(&s_context, 0x0A39, x | (y << 16)));
                 VG_LITE_RETURN_ERROR(push_state(&s_context, 0x0A3D, tessellation_size / 64));
+                VG_LITE_RETURN_ERROR(push_state(&s_context, 0x0A3A, bound_width | (bound_height << 16)));
 
                 if (VLM_PATH_GET_UPLOAD_BIT(*path) == 1) {
                     VG_LITE_RETURN_ERROR(push_call(&s_context, path->uploaded.address, path->uploaded.bytes));
